@@ -1,8 +1,5 @@
 # Profit Analysis App
-This application analyses real time oil prices of West Texas Intermediate (WTI) oil in order to make
-predictions about the price of WTI oil the next day. It compares the profit made against outgoing
-costs for the current and subsequent day. It advises the user whether it would be more profitable to
-dock today or tomorrow.
+This application analyses real time oil prices of West Texas Intermediate (WTI) oil in order to make predictions about the price of WTI oil the next day. It compares the profit made against outgoing costs for the current and subsequent day. It advises the user whether it would be more profitable to dock today or tomorrow.
 
 The project is written in Python 3.7.
 
