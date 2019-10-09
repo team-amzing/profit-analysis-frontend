@@ -22,3 +22,11 @@ pipenv shell
 
 To exit the virtual environment use `exit` and to see where you virtual environment is located run
 `pipenv --venv` which may be useful when setting up your project interpreter in your IDE.
+
+This project used the black auto formatter which can be run on git commit along with flake8 if you install pre-commit. To do this run the following in your terminal from within your virtual environment.
+
+```
+pre-commit install
+```
+
+Now pre-commit hooks should run on `git commit`.
