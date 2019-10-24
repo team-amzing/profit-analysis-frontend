@@ -87,4 +87,4 @@ for t in range(len(test)):
 	predictions.append(yhat)
 	obs = test[t]
 	history.append(obs)
-	print('%s, Predicted = %f, Expected = %f, Difference = %f' % (str(data['Date'][t])[0:10], yhat, obs, (yhat-obs)) )
+	print('%s, Predicted = %f, Expected = %f, Difference = %f' % (str(data['Date'][t + size])[0:10], yhat, obs, (yhat-obs)) )
