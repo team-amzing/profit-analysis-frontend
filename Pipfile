@@ -12,6 +12,10 @@ coverage = "==4.5.4"
 pre-commit = "==1.18.3"
 
 [packages]
+numpy = "==1.17.4"
+matplotlib = "==3.1.2"
+quandl = "==3.4.8"
+statsmodels = "==0.10.1"
 
 [requires]
 python_version = "3.7"
