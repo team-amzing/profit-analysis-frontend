@@ -1,3 +1,4 @@
+
 import tkinter as tk
 import datetime
 from pandas import DataFrame
@@ -24,8 +25,15 @@ dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
 timeFrame = tk.Frame(root)
 timeFrame.pack(fill=tk.X)
-main_window = tk.Label(root, text="\n Option: SELL   \n \n Todays Oil Price : insert value here \n \n Predicted price Tomorrow:  value \n \n Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16))
-main_window.pack()
+decision = 1
+if decision == 1:
+    decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green",font =("Times 32",40)).pack()
+else:
+    decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack()
+if decision ==1:
+	main_window = tk.Label(root, text="\n Recommendation: SELL   \n \n Todays Oil Price : insert value here \n \n Predicted price Tomorrow:  value \n \n Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
+else:
+	main_window = tk.Label(root, text="\n Recommendation: DIM SELL   \n \n Todays Oil Price : insert value here \n \n Predicted price Tomorrow:  value \n \n Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderswidth = 5, font =("Times 32",16)).pack()
 
 figure1 = plt.Figure(figsize=(5,4), dpi=100)
 ax1 = figure1.add_subplot(111)
