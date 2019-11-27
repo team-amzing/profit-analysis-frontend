@@ -1,15 +1,7 @@
 """
 WIT oil price data is acquired from the Quandl API for use by the data_analysis module.
 """
-import numpy as np
-import matplotlib.pyplot as plt
 import quandl
-from datetime import datetime
-from statsmodels.tsa.arima_model import ARIMA
-import pandas as pd
-import os
-
-from pandas.plotting import register_matplotlib_converters
 
 
 def call_api(n_days):
@@ -22,4 +14,3 @@ def call_api(n_days):
     # Get data from the quandl api, then only return the number of days asked for
     data = quandl.get("EIA/PET_RWTC_D", returns="numpy")
     return data[-n_days:]
-
