@@ -18,12 +18,13 @@ Data2 = {'Day': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','W
 df2 = DataFrame(Data2,columns=['Day','Profit'])
 df2 = df2[['Day', 'Profit']].groupby('Day').sum()
 
-root= tk.Tk() 
+root= tk.Tk()
+ 
 dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
 timeFrame = tk.Frame(root)
 timeFrame.pack(fill=tk.X)
-
+main_window = tk.Label(root, text="\n Option: SELL   \n \n Todays Oil Price : insert value here \n \n Predicted price Tomorrow:  value \n \n Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "solid", borderwidth = 2, font =("Times 32",16)).pack()
 
 figure1 = plt.Figure(figsize=(5,4), dpi=100)
 ax1 = figure1.add_subplot(111)
