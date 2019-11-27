@@ -83,14 +83,11 @@ train, test = X[0:size], X[size : len(X)]
 history = [x for x in train]
 predictions = list()
 for t in range(len(test)):
-    model = ARIMA(history, order=(5, 1, 0))
+    model = ARIMA(history, order=(5,1,0))
     model_fit = model.fit(disp=0)
     output = model_fit.forecast()
     yhat = output[0]
     predictions.append(yhat)
     obs = test[t]
     history.append(obs)
-    print(
-        "%s, Predicted = %f, Expected = %f, Difference = %f"
-        % (str(data["Date"][t])[0:10], yhat, obs, (yhat - obs))
-    )
+    print('%s, Predicted = %f, Expected = %f, Difference = %f' % (str(data['Date'][t + size])[0:10], yhat, obs, (yhat-obs)) )
