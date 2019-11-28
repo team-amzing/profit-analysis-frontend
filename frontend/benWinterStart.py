@@ -1,9 +1,11 @@
-
 import tkinter as tk
 import datetime
+import time
 from pandas import DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
 
 def createLabel(root):
   # Function to create tkinter label.
@@ -34,13 +36,17 @@ dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
 timeFrame = tk.Frame(root)
 timeFrame.pack(fill=tk.X)
+time1 = ''
 
 #Frame to hold quantative price information:
 labelFrame = tk.Frame(root)
 labelFrame.pack(side = tk.BOTTOM, fill='both', expand=True)
 
 decision = 1
+
 photo = tk.PhotoImage(file='Logo.png')
+#Line underneath for ben
+#photo = tk.PhotoImage(file='/Users/benwinter/Documents/Arima/Front End/Logo.png/')
 photo_label = tk.Label(dateFrame, image =photo).pack(side=tk.RIGHT)
 
 #if decision == 1:
@@ -70,7 +76,7 @@ ax2.set_title('Day Vs. Profit')
 x = datetime.datetime.now()
 
 dateLabel = tk.Label(dateFrame, text=x.strftime("%x"), fg="black")
-timeLabel = tk.Label(timeFrame, text=x.strftime("%X"), fg="black")
+timeLabel = tk.Label(dateFrame, text=x.strftime("%X"), fg="black")
 
 dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 timeLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
@@ -106,4 +112,17 @@ for column in range(num_columns):
   tk.Grid.columnconfigure(labelFrame, 2*column, weight=1)
   tk.Grid.columnconfigure(labelFrame, 2*column + 1, weight=1)
 
+def tick():
+    global time1
+    # get the current local time from the PC
+    time2 = time.strftime('%H:%M:%S')
+    # if time string has changed, update it
+    if time2 != time1:
+        time1 = time2
+        timeLabel.config(text=time2)
+    # calls itself every 200 milliseconds
+    # to update the time display as needed
+    # could use >200 ms, but display gets jerky
+    timeLabel.after(200, tick)
+tick()
 root.mainloop()
