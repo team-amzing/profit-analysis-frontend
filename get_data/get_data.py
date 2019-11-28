@@ -11,9 +11,8 @@ API_KEY = "NszGhwY_Qh8Ubj1BWhVt"
 
 
 def call_api(n_days):
-    """
-    Calls the API using the given API key, and returns the last n_days worth of WTI oil price data
-    """
+    """Calls the API using the given API key, and returns the last n_days worth
+    of WTI oil price data."""
 
     # Declare Quandl API key
     quandl.ApiConfig.api_key = API_KEY
