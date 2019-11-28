@@ -41,12 +41,12 @@ labelFrame.pack(side = tk.BOTTOM, fill='both', expand=True)
 
 decision = 1
 photo = tk.PhotoImage(file='Logo.png')
-photo_label = tk.Label(root, image =photo).pack(side=tk.TOP)
+photo_label = tk.Label(dateFrame, image =photo).pack(side=tk.RIGHT)
 
-if decision == 1:
-    decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green",font =("Times 32",40)).pack(side = tk.TOP)
-else:
-    decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack(side = tk.TOP)
+#if decision == 1:
+   # decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green",font =("Times 32",40)).pack()
+#else:
+    #decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack(side = tk.TOP)
 if decision ==1:
 	main_window = tk.Label(root, text="\n Recommendation: SELL   \n  Todays Oil Price : insert value here \n  Predicted price Tomorrow:  value \n  Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
 else:
@@ -74,6 +74,7 @@ timeLabel = tk.Label(timeFrame, text=x.strftime("%X"), fg="black")
 
 dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 timeLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
+#dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 
 #Configure grid arangment
 num_rows = 3
