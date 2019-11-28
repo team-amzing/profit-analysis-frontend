@@ -72,16 +72,8 @@ x = datetime.datetime.now()
 dateLabel = tk.Label(dateFrame, text=x.strftime("%x"), fg="black")
 timeLabel = tk.Label(timeFrame, text=x.strftime("%X"), fg="black")
 
-decision = 1
-if decision == 1:
-    decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green")
-else:
-    decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red")
-
 dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 timeLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
-
-
 
 #Configure grid arangment
 num_rows = 3
