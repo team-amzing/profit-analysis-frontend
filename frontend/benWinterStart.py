@@ -18,7 +18,7 @@ Data2 = {'Day': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','W
   
 df2 = DataFrame(Data2,columns=['Day','Profit'])
 df2 = df2[['Day', 'Profit']].groupby('Day').sum()
-
+TP = 55
 root= tk.Tk()
  
 dateFrame = tk.Frame(root)
@@ -26,10 +26,13 @@ dateFrame.pack(fill=tk.X)
 timeFrame = tk.Frame(root)
 timeFrame.pack(fill=tk.X)
 decision = 1
+photo = tk.PhotoImage(file='Logo.png')
+photo_label = tk.Label(root, image =photo).pack(side=tk.TOP)
+
 if decision == 1:
     decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green",font =("Times 32",40)).pack(side = tk.TOP)
 else:
-    decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack()
+    decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack(side = tk.TOP)
 if decision ==1:
 	main_window = tk.Label(root, text="\n Recommendation: SELL   \n  Todays Oil Price : insert value here \n  Predicted price Tomorrow:  value \n  Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
 else:
