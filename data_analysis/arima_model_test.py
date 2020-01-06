@@ -5,10 +5,15 @@ from statsmodels.tsa.arima_model import ARIMA
 
 from get_data.get_data import call_api
 
-data = call_api(2000)
+
+# Change these values to play with the ARIMA model
+n_data_points = 2000
+fraction_training = 0.9
+
+data = call_api(n_data_points)
 df = pd.DataFrame(data)
 df = df.drop("Date", axis=1)
-size_index = int(len(df) * 0.9)
+size_index = int(len(df) * fraction_training)
 train = df.values[:size_index]
 test = df.values[size_index:]
 
@@ -37,7 +42,7 @@ plt.fill_between(
     label="95% HDI",
 )
 plt.title("Forecast vs Actuals")
-plt.legend(loc="upper left", fontsize=8)
+plt.legend(loc="lower left", fontsize=8)
 plt.show()
 
 
