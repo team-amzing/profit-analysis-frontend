@@ -1,3 +1,6 @@
+"""This script is for use in testing out the ARIMA model for use with the quandl api data.
+There is also a function that calculate metrics to measure the accuracy of the model."""
+
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -49,6 +52,7 @@ plt.show()
 def forecast_accuracy(forecast, actual):
     """Metrics for measuring accuracy of model."""
     # Mean Absolute Percentage Error
+    # If this value is less than 0.05 then our result is within the 95% credible region
     mape = np.mean(np.abs(forecast - actual) / np.abs(actual))
     # Mean Error
     me = np.mean(forecast - actual)
