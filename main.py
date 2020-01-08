@@ -1,9 +1,13 @@
 import tkinter as tk
 import datetime
 import time
+import pandas as pd
 from pandas import DataFrame
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from data_analysis.price_prediction import model_arima
+from get_data.get_data import call_api
 
 def createLabel(root):
   # Function to create tkinter label.
@@ -14,19 +18,32 @@ def createLabel(root):
 
   return label, var
 
-Data1 = {'Day': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','Wednesday','Thursday','Friday'],
-        'Oil_Price': [55.5,60.1,62.9,61.7,63.1,62.4,62.1,59.7,63.9]
-       }
-  
-df1 = DataFrame(Data1,columns=['Day','Oil_Price'])
-df1 = df1[['Day', 'Oil_Price']].groupby('Day').sum()
-
-Data2 = {'Day': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','Wednesday','Thursday','Friday'],
+#Dummy Data still:
+Data2 = {'Date': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','Wednesday','Thursday','Friday'],
         'Profit': [6.2,5.7,5.9,4.9,7.2,8.1,7.4,4.5,4.8]
        }
+
+prediction_df = model_arima(2000, 5)
+prediction_df = prediction_df.rename(columns = {"Prediction" :  "Value" })
+data          = DataFrame(call_api(10))
+
+data = data.append(prediction_df)
+data = data.reset_index(drop=True)
+
+#Apologies this is a bit of a mess:
+last = None
+for i, row in data.iterrows():
+	if ((np.isnan(row['Date'].to_numpy()))):
+		data.loc[i,'Date'] = last + datetime.timedelta(days=1)
+		row['Date']        = last + datetime.timedelta(days=1)
+	if (i != 0):
+		last = row['Date']
   
-df2 = DataFrame(Data2,columns=['Day','Profit'])
-df2 = df2[['Day', 'Profit']].groupby('Day').sum()
+df1 = DataFrame(data,columns=['Date','Value'])
+df1 = df1[['Date', 'Value']].groupby('Date').sum()
+
+df2 = DataFrame(Data2,columns=['Date','Profit'])
+df2 = df2[['Date', 'Profit']].groupby('Date').sum()
 TP = 55
 root= tk.Tk()
  
@@ -42,7 +59,7 @@ labelFrame.pack(side = tk.BOTTOM, fill='both', expand=True)
 
 decision = 1
 
-photo = tk.PhotoImage(file='Logo.png')
+photo = tk.PhotoImage(file='./frontend/Logo.png')
 #Line underneath for ben
 #photo = tk.PhotoImage(file='/Users/benwinter/Documents/Arima/Front End/Logo.png/')
 photo_label = tk.Label(dateFrame, image =photo).pack(side=tk.RIGHT)
@@ -62,14 +79,14 @@ line1 = FigureCanvasTkAgg(figure1, root)
 line1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
 
 df1.plot(kind='line', legend=True, ax=ax1, color='r', marker='o', fontsize=10)
-ax1.set_title('Day Vs. Oil Price')
+ax1.set_title('Date Vs. Oil Price')
 
 figure2 = plt.Figure(figsize=(5,4), dpi=100)
 ax2 = figure2.add_subplot(111)
 line2 = FigureCanvasTkAgg(figure2, root)
 line2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
 df2.plot(kind='line', legend=True, ax=ax2, color='g',marker='x', fontsize=10)
-ax2.set_title('Day Vs. Profit')
+ax2.set_title('Date Vs. Profit')
 
 x = datetime.datetime.now()
 
@@ -96,13 +113,13 @@ for column in range(num_columns):
     #Set day columns:
     labels[2*label_idx], label_text[2*label_idx] = createLabel(labelFrame)
 
-    label_text[2*label_idx].set("{}:".format(Data1['Day'][label_idx]))
+    label_text[2*label_idx].set("{}:".format(data['Date'][label_idx]))
     labels[2*label_idx]    .grid(row=row,column=2*column, sticky='e')
 
     #Set price columns
     labels[2*label_idx + 1], label_text[2*label_idx + 1] = createLabel(labelFrame)
 
-    label_text[2*label_idx + 1].set("{}".format(Data1['Oil_Price'][label_idx]))
+    label_text[2*label_idx + 1].set("{}".format(data['Value'][label_idx]))
     labels    [2*label_idx + 1].grid(row=row,column= 2*column + 1, sticky='w')
 
     label_idx += 1
@@ -122,5 +139,6 @@ def tick():
     # to update the time display as needed
     # could use >200 ms, but display gets jerky
     timeLabel.after(200, tick)
+
 tick()
 root.mainloop()
