@@ -5,8 +5,6 @@ from pandas import DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
-
 def createLabel(root):
   # Function to create tkinter label.
   var   = tk.StringVar()
@@ -15,6 +13,10 @@ def createLabel(root):
   var.set("Default")
 
   return label, var
+
+#Variables:
+
+WIND_SIZE = "800x600"
 
 Data1 = {'Day': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','Wednesday','Thursday','Friday'],
         'Oil_Price': [55.5,60.1,62.9,61.7,63.1,62.4,62.1,59.7,63.9]
@@ -31,6 +33,9 @@ df2 = DataFrame(Data2,columns=['Day','Profit'])
 df2 = df2[['Day', 'Profit']].groupby('Day').sum()
 TP = 55
 root= tk.Tk()
+
+#Set window size:
+root.geometry(WIND_SIZE)
  
 dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
@@ -58,7 +63,7 @@ if decision ==1:
 else:
 	main_window = tk.Label(root, text="\n Recommendation: DIM SELL   \n  Todays Oil Price : insert value here \n  Predicted price Tomorrow:  value \n  Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderswidth = 5, font =("Times 32",16)).pack()
 
-figure1 = plt.Figure(figsize=(5,4), dpi=100)
+figure1 = plt.Figure(figsize=(4,4), dpi=100)
 ax1 = figure1.add_subplot(111)
 line1 = FigureCanvasTkAgg(figure1, root)
 line1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
@@ -66,7 +71,7 @@ line1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
 df1.plot(kind='line', legend=True, ax=ax1, color='r', marker='o', fontsize=10)
 ax1.set_title('Day Vs. Oil Price')
 
-figure2 = plt.Figure(figsize=(5,4), dpi=100)
+figure2 = plt.Figure(figsize=(4,4), dpi=100)
 ax2 = figure2.add_subplot(111)
 line2 = FigureCanvasTkAgg(figure2, root)
 line2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
