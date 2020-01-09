@@ -26,5 +26,10 @@ def sell_function(data_points,n_days):
 			best_profit = count
 			pot_profit = profit
 		count += 1
-	print('Sell in %i days' % best_profit)
+	if best_profit == 0: 
+		print('Sell today')
+	elif best_profit == 1:
+		print('Sell tomorrow')
+	else:
+		print('Sell in %i days' % best_profit)
 
