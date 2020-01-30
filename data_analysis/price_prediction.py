@@ -17,6 +17,7 @@ def model_arima(n_days, n_predictions):
 
     data = call_api(n_days)
     df = pd.DataFrame(data)
+
     df = df.drop("Date", axis=1)
 
     model = ARIMA(df, order=(1, 1, 1))
