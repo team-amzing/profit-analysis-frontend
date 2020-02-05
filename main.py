@@ -1,6 +1,8 @@
 import tkinter as tk
 import datetime
 import time
+import requests
+from bs4 import BeautifulSoup
 import pandas as pd
 from pandas import DataFrame
 import numpy as np
@@ -9,19 +11,49 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from data_analysis.price_prediction import model_arima
 from get_data.get_data import call_api
 
+no_units = 750000
+running_cost = 30000
+
+def sell_function(data_points,n_days):
+    # Predict 5 days using 2000 data points
+    prediction_df = model_arima(data_points, n_days)
+    
+    #print(prediction_df)
+    #prediction_df = pd.DataFrame(data={'Prediction':[50, 55, 70],'Error':[1.2, 1.4, 1.9]})
+
+    # Calculates the profit for each day predicted taking into account running costs.
+    # And compares it with the highest profit so far.
+    count = 0
+    #price = prediction_df.iloc[0]['Prediction']
+    profit_array = [None] * (n_days + 1)
+    while count < n_days:
+      price = prediction_df.iloc[count]['Prediction']
+      profit_array[count+1] = price
+      count += 1
+      
+    return profit_array
+
+
+
+def showCurrentPrice():
+    page = requests.get('https://markets.businessinsider.com/commodities/oil-price?type=wti')
+    soup = BeautifulSoup(page.text, 'html.parser')
+    currentPrices = soup.find(class_='push-data')
+    price = str(currentPrices.next)
+    return price
+
+
+
 def createLabel(root):
   # Function to create tkinter label.
   var   = tk.StringVar()
-  label = tk.Label( root, textvariable=var, anchor="e")
+  label = tk.Label(root, textvariable=var, anchor="e", fg="white", bg="black")
 
   var.set("Default")
 
   return label, var
 
-#Dummy Data still:
-Data2 = {'Date': ['Tuesday','Wednesday','Thursday','Friday','Today','Tomorrow','Wednesday','Thursday','Friday'],
-        'Profit': [6.2,5.7,5.9,4.9,7.2,8.1,7.4,4.5,4.8]
-       }
+
 
 prediction_df = model_arima(2000, 5)
 prediction_df = prediction_df.rename(columns = {"Prediction" :  "Value" })
@@ -33,7 +65,7 @@ data = data.reset_index(drop=True)
 #Apologies this is a bit of a mess:
 last = None
 for i, row in data.iterrows():
-	if ((np.isnan(row['Date'].to_numpy()))):
+	if ((pd.isnull(row['Date'].to_numpy()))):
 		data.loc[i,'Date'] = last + datetime.timedelta(days=1)
 		row['Date']        = last + datetime.timedelta(days=1)
 	if (i != 0):
@@ -42,11 +74,10 @@ for i, row in data.iterrows():
 df1 = DataFrame(data,columns=['Date','Value'])
 df1 = df1[['Date', 'Value']].groupby('Date').sum()
 
-df2 = DataFrame(Data2,columns=['Date','Profit'])
-df2 = df2[['Date', 'Profit']].groupby('Date').sum()
+#df2 = df2[['Date', 'Profit']].groupby('Date').sum()
 TP = 55
 root= tk.Tk()
- 
+
 dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
 timeFrame = tk.Frame(root)
@@ -59,39 +90,82 @@ labelFrame.pack(side = tk.BOTTOM, fill='both', expand=True)
 
 decision = 1
 
-photo = tk.PhotoImage(file='./frontend/Logo.png')
+photo = tk.PhotoImage(file='/Users/benwinter/Documents/profit-analysis-app-backend_frontend_intergration/frontend/Logo.png')
 #Line underneath for ben
 #photo = tk.PhotoImage(file='/Users/benwinter/Documents/Arima/Front End/Logo.png/')
-photo_label = tk.Label(dateFrame, image =photo).pack(side=tk.RIGHT)
+photo_label = tk.Label(dateFrame, image =photo, fg="white", bg="black").pack(side=tk.RIGHT)
 
 #if decision == 1:
    # decisionLabel = tk.Label(dateFrame, text="SELL SELL SELL", fg="green",font =("Times 32",40)).pack()
 #else:
     #decisionLabel = tk.Label(dateFrame, text="We advise you not to sell today", fg="red",font =("Times 32",40)).pack(side = tk.TOP)
-if decision ==1:
-	main_window = tk.Label(root, text="\n Recommendation: SELL   \n  Todays Oil Price : insert value here \n  Predicted price Tomorrow:  value \n  Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
+
+currentP = showCurrentPrice()
+sixDayPrediction = sell_function(2000, 6)
+sixDayPrediction[0] = currentP
+TomorrowPred = sixDayPrediction[1]
+difference = 0
+decision = 0
+if TomorrowPred > float(sixDayPrediction[0]):
+  difference = TomorrowPred - float(sixDayPrediction[0])
+  decision = 0
 else:
-	main_window = tk.Label(root, text="\n Recommendation: DIM SELL   \n  Todays Oil Price : insert value here \n  Predicted price Tomorrow:  value \n  Epected Gain Tomorrow: +-value \n", fg = 'white',bg = 'black', relief = "raised", borderswidth = 5, font =("Times 32",16)).pack()
+  difference = float(sixDayPrediction[0]) - TomorrowPred
+  decision = 1
+difference = str(round(difference, 2))
+
+if decision == 1:
+	main_window = tk.Label(root, text="\n Recommendation: SELL   \n  Todays Oil Price : " + str(sixDayPrediction[0])+ " \n  Predicted price Tomorrow:  " + str(round(TomorrowPred, 2)) + " \n  Expected Gain Tomorrow: " + difference + " \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
+else:
+	main_window = tk.Label(root, text="\n Recommendation: DON'T SELL   \n  Todays Oil Price : " + str(sixDayPrediction[0]) + " \n  Predicted price Tomorrow:  " + str(round(TomorrowPred, 2)) + " \n  Expected Gain Tomorrow: " + difference + " \n", fg = 'white',bg = 'black', relief = "raised", borderwidth = 5, font =("Times 32",16)).pack()
 
 figure1 = plt.Figure(figsize=(5,4), dpi=100)
+figure1.patch.set_facecolor('black')
 ax1 = figure1.add_subplot(111)
 line1 = FigureCanvasTkAgg(figure1, root)
 line1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-
 df1.plot(kind='line', legend=True, ax=ax1, color='r', marker='o', fontsize=10)
-ax1.set_title('Date Vs. Oil Price')
+ax1.set_facecolor('black') 
+ax1.grid(b=True, which='major', color='#666666', linestyle='-')
+ax1.spines['top'].set_color('white')
+ax1.spines['bottom'].set_color('white')
+ax1.spines['left'].set_color('white')
+ax1.spines['right'].set_color('white')
+ax1.tick_params(axis='x', colors='white')
+ax1.tick_params(axis='y', colors='white')
+ax1.set_title('Date Vs. Oil Price', color='white')
+
+#Dummy Data still:
+
+
+Data2 = {'Date': ['Today','Tomorrow','Monday','Tuesday','Wednesday','Thursday', 'Friday'],
+        'Profit': [float(sixDayPrediction[0])-float(currentP),float(sixDayPrediction[1])-float(currentP),float(sixDayPrediction[2])-float(currentP),float(sixDayPrediction[3])-float(currentP),
+        float(sixDayPrediction[4])-float(currentP),float(sixDayPrediction[5])-float(currentP),float(sixDayPrediction[6])-float(currentP)]
+       }
+df2 = DataFrame(Data2,columns=['Date','Profit'])
+
 
 figure2 = plt.Figure(figsize=(5,4), dpi=100)
+figure2.patch.set_facecolor('black')
 ax2 = figure2.add_subplot(111)
 line2 = FigureCanvasTkAgg(figure2, root)
 line2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
 df2.plot(kind='line', legend=True, ax=ax2, color='g',marker='x', fontsize=10)
-ax2.set_title('Date Vs. Profit')
+ax2.set_facecolor('black')
+ax2.grid(b=True, which='major', color='#666666', linestyle='-')
+ax2.spines['top'].set_color('white')
+ax2.set_xticklabels(['Today','Tomorrow','Monday','Tuesday','Wednesday','Thursday', 'Friday'], fontsize=6)
+ax2.spines['bottom'].set_color('white')
+ax2.spines['left'].set_color('white')
+ax2.spines['right'].set_color('white')
+ax2.tick_params(axis='x', colors='white')
+ax2.tick_params(axis='y', colors='white')
+ax2.set_title('Date Vs. Profit', color='white')
 
 x = datetime.datetime.now()
 
-dateLabel = tk.Label(dateFrame, text=x.strftime("%x"), fg="black")
-timeLabel = tk.Label(dateFrame, text=x.strftime("%X"), fg="black")
+dateLabel = tk.Label(dateFrame, text=x.strftime("%x"), fg="white")
+timeLabel = tk.Label(dateFrame, text=x.strftime("%X"), fg="white")
 
 dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 timeLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
@@ -140,5 +214,12 @@ def tick():
     # could use >200 ms, but display gets jerky
     timeLabel.after(200, tick)
 
+#painting all frames
+root.configure(background='black')
+labelFrame.configure(background='black')
+dateFrame.configure(background='black')
+timeFrame.configure(background='black')
+dateLabel.configure(background='black')
+timeLabel.configure(background='black')
 tick()
 root.mainloop()
