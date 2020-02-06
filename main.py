@@ -90,7 +90,7 @@ labelFrame.pack(side = tk.BOTTOM, fill='both', expand=True)
 
 decision = 1
 
-photo = tk.PhotoImage(file='/Users/benwinter/Documents/profit-analysis-app-backend_frontend_intergration/frontend/Logo.png')
+photo = tk.PhotoImage(file='./frontend/Logo.png')
 #Line underneath for ben
 #photo = tk.PhotoImage(file='/Users/benwinter/Documents/Arima/Front End/Logo.png/')
 photo_label = tk.Label(dateFrame, image =photo, fg="white", bg="black").pack(side=tk.RIGHT)
