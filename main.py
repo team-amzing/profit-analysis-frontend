@@ -1,15 +1,17 @@
-import tkinter as tk
 import datetime
-import time
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
-from pandas import DataFrame
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from data_analysis.price_prediction import model_arima
-from get_data.get_data import call_api
+import numpy as np
+import pandas as pd
+import requests
+import tkinter as tk
+import time
+
+from   bs4 import BeautifulSoup
+from   matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from   pandas import DataFrame
+
+from   data_analysis.price_prediction import model_arima
+from   get_data.get_data import call_api
 
 no_units = 750000
 running_cost = 30000
