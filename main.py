@@ -1,5 +1,6 @@
 import datetime
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import requests
@@ -8,7 +9,6 @@ import time
 
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from pandas import DataFrame
 
 from data_analysis.price_prediction import model_arima
 from get_data.get_data import call_api
@@ -72,31 +72,78 @@ def tick():
 
 # Variables:
 
+num_days_ahead_to_predict = 7
+num_days_previous_to_show = 10
+num_days_to_train_on = 2000
+
 # Configure grid arangment:
 num_rows = 4
-num_columns = 3
+num_columns = 4
 
 # Make prediction:
-prediction_df = model_arima(2000, 5)
+prediction_df = model_arima(num_days_to_train_on, num_days_ahead_to_predict)
 prediction_df = prediction_df.rename(columns={"Prediction": "Value"})
 
 # Call real data from API:
-data = DataFrame(call_api(10))
+data = pd.DataFrame(call_api(num_days_previous_to_show))
 data = data.append(prediction_df)
 data = data.reset_index(drop=True)
 
 # Add dates to dataframe predicted rows:
 # TODO Find a more elegant soloution for this mess - Michael
 last = None
+recent_date_check = 1
+most_recent_date = None
 for i, row in data.iterrows():
     if pd.isnull(row["Date"].to_numpy()):
         data.loc[i, "Date"] = last + datetime.timedelta(days=1)
         row["Date"] = last + datetime.timedelta(days=1)
+
+        if recent_date_check == 1:
+            most_recent_date = row["Date"]
+            recent_date_check = 0
+
     if i != 0:
         last = row["Date"]
 
-df1 = DataFrame(data, columns=["Date", "Value"])
+df1 = pd.DataFrame(data, columns=["Date", "Value"])
 df1 = df1[["Date", "Value"]].groupby("Date").sum()
+
+# Make decision on whether to sell or not:
+decision = 1
+
+currentP = showCurrentPrice()
+sixDayPrediction = sell_function(num_days_to_train_on, num_days_ahead_to_predict)
+sixDayPrediction[0] = currentP
+TomorrowPred = sixDayPrediction[1]
+difference = 0
+decision = 0
+
+if TomorrowPred > float(sixDayPrediction[0]):
+    difference = TomorrowPred - float(sixDayPrediction[0])
+    decision = 0
+else:
+    difference = float(sixDayPrediction[0]) - TomorrowPred
+    decision = 1
+difference = str(round(difference, 2))
+
+# Calculate Profits:
+profits = [[]] * (num_days_ahead_to_predict + 1)
+dates = [[]] * (num_days_ahead_to_predict + 1)
+
+for day in range(num_days_ahead_to_predict + 1):
+    profits[day] = float(sixDayPrediction[day]) - float(currentP)
+
+df2 = pd.DataFrame(profits, columns=["Profit"])
+df2["Date"] = dates
+
+last = most_recent_date - datetime.timedelta(days=2)
+for i, row in df2.iterrows():
+    df2.loc[i, "Date"] = last + datetime.timedelta(days=1)
+    row["Date"] = last + datetime.timedelta(days=1)
+    last = row["Date"]
+
+df2 = df2[["Date", "Profit"]].groupby("Date").sum()
 
 # UI Elements
 root = tk.Tk()
@@ -116,24 +163,6 @@ photo = tk.PhotoImage(file="./frontend/Logo.png")
 photo_label = tk.Label(dateFrame, image=photo, fg="white", bg="black").pack(
     side=tk.RIGHT
 )
-
-# Make decision on whether to seel or not:
-decision = 1
-
-currentP = showCurrentPrice()
-sixDayPrediction = sell_function(2000, 6)
-sixDayPrediction[0] = currentP
-TomorrowPred = sixDayPrediction[1]
-difference = 0
-decision = 0
-
-if TomorrowPred > float(sixDayPrediction[0]):
-    difference = TomorrowPred - float(sixDayPrediction[0])
-    decision = 0
-else:
-    difference = float(sixDayPrediction[0]) - TomorrowPred
-    decision = 1
-difference = str(round(difference, 2))
 
 # Display descision:
 
@@ -176,27 +205,9 @@ ax1.tick_params(axis="x", colors="white")
 ax1.tick_params(axis="y", colors="white")
 ax1.set_title("Date Vs. Oil Price", color="white")
 
-Data2 = {
-    "Date": [
-        "Today",
-        "Tomorrow",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-    ],
-    "Profit": [
-        float(sixDayPrediction[0]) - float(currentP),
-        float(sixDayPrediction[1]) - float(currentP),
-        float(sixDayPrediction[2]) - float(currentP),
-        float(sixDayPrediction[3]) - float(currentP),
-        float(sixDayPrediction[4]) - float(currentP),
-        float(sixDayPrediction[5]) - float(currentP),
-        float(sixDayPrediction[6]) - float(currentP),
-    ],
-}
-df2 = DataFrame(Data2, columns=["Date", "Profit"])
+dates = [[]] * len(df2.index)
+for index in range(len(df2.index)):
+    dates[index] = df2.index[index].strftime("%Y-%m-%d")
 
 figure2 = plt.Figure(figsize=(5, 4), dpi=100)
 figure2.patch.set_facecolor("black")
@@ -205,12 +216,10 @@ line2 = FigureCanvasTkAgg(figure2, root)
 line2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
 df2.plot(kind="line", legend=True, ax=ax2, color="g", marker="x", fontsize=10)
 ax2.set_facecolor("black")
+ax2.xaxis.set_major_locator(mdates.AutoDateLocator())
 ax2.grid(b=True, which="major", color="#666666", linestyle="-")
+ax2.set_xticklabels(dates, rotation=35, fontsize=10)
 ax2.spines["top"].set_color("white")
-ax2.set_xticklabels(
-    ["Today", "Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    fontsize=6,
-)
 ax2.spines["bottom"].set_color("white")
 ax2.spines["left"].set_color("white")
 ax2.spines["right"].set_color("white")
@@ -239,7 +248,13 @@ for column in range(num_columns):
         # Set day columns:
         labels[2 * label_idx], label_text[2 * label_idx] = createLabel(labelFrame)
 
-        label_text[2 * label_idx].set("{}:".format(data["Date"][label_idx]))
+        try:
+            label_text[2 * label_idx].set(
+                "{}:".format(data["Date"][label_idx].strftime("%Y-%m-%d"))
+            )
+        except:
+            label_text[2 * label_idx].set("No Data")
+
         labels[2 * label_idx].grid(row=row, column=2 * column, sticky="e")
 
         # Set price columns
@@ -247,7 +262,11 @@ for column in range(num_columns):
             labelFrame
         )
 
-        label_text[2 * label_idx + 1].set("{}".format(data["Value"][label_idx]))
+        try:
+            label_text[2 * label_idx + 1].set("{}".format(data["Value"][label_idx]))
+        except:
+            label_text[2 * label_idx + 1].set("VALUE_MISSING")
+
         labels[2 * label_idx + 1].grid(row=row, column=2 * column + 1, sticky="w")
 
         label_idx += 1
