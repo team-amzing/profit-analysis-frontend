@@ -17,6 +17,7 @@ matplotlib = "==3.1.2"
 quandl = "==3.4.8"
 statsmodels = "==0.10.1"
 tkinter = "*"
+bs4 = "*"
 
 [requires]
 python_version = "3.7"
