@@ -216,9 +216,9 @@ dates = [[]] * len(profit_df.index)
 for index in range(len(profit_df.index)):
     dates[index] = profit_df.index[index].strftime("%Y-%m-%d")
 
-figure1, ax1, line1 = diplayGraph(root, price_df, tk.LEFT, "Oil Price", "r")
-figure2, ax2, line2 = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
-ax2.set_xticklabels(dates, rotation=35, fontsize=10)
+price_figure, price_ax, price_line = diplayGraph(root, price_df, tk.LEFT, "Oil Price", "r")
+profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
+profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
 
 # Data Grid:
 current_date = datetime.datetime.now()
@@ -256,7 +256,7 @@ for column in range(num_columns):
         )
 
         try:
-            price_content = data["Value"][label_idx]
+            price_content = "{0:.2f}".format(data["Value"][label_idx]) 
         except:
             price_content = "VALUE_MISSING"
 
