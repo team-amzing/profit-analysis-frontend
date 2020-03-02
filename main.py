@@ -53,6 +53,29 @@ def createLabel(root):
 
     return label, var
 
+def diplayGraph(root, df, side, title, color):
+    """ Displays a graph on a tkinter frame """
+
+    figure = plt.Figure(figsize=(5, 4), dpi=100)
+    figure.patch.set_facecolor("black")
+    ax = figure.add_subplot(111)
+    line = FigureCanvasTkAgg(figure, root)
+    line.get_tk_widget().pack(side= side, fill=tk.BOTH)
+    df.plot(kind="line", legend=True, ax=ax, color=color, marker="o", fontsize=10)
+    ax.set_facecolor("black")
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+    ax.grid(b=True, which="major", color="#666666", linestyle="-")
+    ax.spines["top"].set_color("white")
+    ax.spines["bottom"].set_color("white")
+    ax.spines["left"].set_color("white")
+    ax.spines["right"].set_color("white")
+    ax.tick_params(axis="x", colors="white")
+    ax.tick_params(axis="y", colors="white")
+    ax.set_title(title, color="white")
+
+    return figure, ax, line
+
+
 
 def tick():
     """ Tick function which runs each tkinter tick """
@@ -106,8 +129,8 @@ for i, row in data.iterrows():
     if i != 0:
         last = row["Date"]
 
-df1 = pd.DataFrame(data, columns=["Date", "Value"])
-df1 = df1[["Date", "Value"]].groupby("Date").sum()
+price_df = pd.DataFrame(data, columns=["Date", "Value"])
+price_df = price_df[["Date", "Value"]].groupby("Date").sum()
 
 # Make decision on whether to sell or not:
 decision = 1
@@ -134,16 +157,16 @@ dates = [[]] * (num_days_ahead_to_predict + 1)
 for day in range(num_days_ahead_to_predict + 1):
     profits[day] = float(sixDayPrediction[day]) - float(currentP)
 
-df2 = pd.DataFrame(profits, columns=["Profit"])
-df2["Date"] = dates
+profit_df = pd.DataFrame(profits, columns=["Profit"])
+profit_df["Date"] = dates
 
 last = most_recent_date - datetime.timedelta(days=2)
-for i, row in df2.iterrows():
-    df2.loc[i, "Date"] = last + datetime.timedelta(days=1)
+for i, row in profit_df.iterrows():
+    profit_df.loc[i, "Date"] = last + datetime.timedelta(days=1)
     row["Date"] = last + datetime.timedelta(days=1)
     last = row["Date"]
 
-df2 = df2[["Date", "Profit"]].groupby("Date").sum()
+profit_df = profit_df[["Date", "Profit"]].groupby("Date").sum()
 
 # UI Elements
 root = tk.Tk()
@@ -189,43 +212,13 @@ main_window = tk.Label(
 
 # Display Graphs:
 
-figure1 = plt.Figure(figsize=(5, 4), dpi=100)
-figure1.patch.set_facecolor("black")
-ax1 = figure1.add_subplot(111)
-line1 = FigureCanvasTkAgg(figure1, root)
-line1.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-df1.plot(kind="line", legend=True, ax=ax1, color="r", marker="o", fontsize=10)
-ax1.set_facecolor("black")
-ax1.grid(b=True, which="major", color="#666666", linestyle="-")
-ax1.spines["top"].set_color("white")
-ax1.spines["bottom"].set_color("white")
-ax1.spines["left"].set_color("white")
-ax1.spines["right"].set_color("white")
-ax1.tick_params(axis="x", colors="white")
-ax1.tick_params(axis="y", colors="white")
-ax1.set_title("Date Vs. Oil Price", color="white")
+dates = [[]] * len(profit_df.index)
+for index in range(len(profit_df.index)):
+    dates[index] = profit_df.index[index].strftime("%Y-%m-%d")
 
-dates = [[]] * len(df2.index)
-for index in range(len(df2.index)):
-    dates[index] = df2.index[index].strftime("%Y-%m-%d")
-
-figure2 = plt.Figure(figsize=(5, 4), dpi=100)
-figure2.patch.set_facecolor("black")
-ax2 = figure2.add_subplot(111)
-line2 = FigureCanvasTkAgg(figure2, root)
-line2.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
-df2.plot(kind="line", legend=True, ax=ax2, color="g", marker="x", fontsize=10)
-ax2.set_facecolor("black")
-ax2.xaxis.set_major_locator(mdates.AutoDateLocator())
-ax2.grid(b=True, which="major", color="#666666", linestyle="-")
+figure1, ax1, line1 = diplayGraph(root, price_df, tk.LEFT, "Oil Price", "r")
+figure2, ax2, line2 = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
 ax2.set_xticklabels(dates, rotation=35, fontsize=10)
-ax2.spines["top"].set_color("white")
-ax2.spines["bottom"].set_color("white")
-ax2.spines["left"].set_color("white")
-ax2.spines["right"].set_color("white")
-ax2.tick_params(axis="x", colors="white")
-ax2.tick_params(axis="y", colors="white")
-ax2.set_title("Date Vs. Profit", color="white")
 
 # Data Grid:
 current_date = datetime.datetime.now()
@@ -245,15 +238,15 @@ label_idx = 0
 for column in range(num_columns):
     for row in range(num_rows):
 
-        # Set day columns:
+        # Set date columns:
         labels[2 * label_idx], label_text[2 * label_idx] = createLabel(labelFrame)
 
         try:
-            label_text[2 * label_idx].set(
-                "{}:".format(data["Date"][label_idx].strftime("%Y-%m-%d"))
-            )
+            date_content = data["Date"][label_idx].strftime("%Y-%m-%d")
         except:
-            label_text[2 * label_idx].set("No Data")
+            date_content = "No Data"
+
+        label_text[2 * label_idx].set(f"{date_content}:")
 
         labels[2 * label_idx].grid(row=row, column=2 * column, sticky="e")
 
@@ -263,9 +256,11 @@ for column in range(num_columns):
         )
 
         try:
-            label_text[2 * label_idx + 1].set("{}".format(data["Value"][label_idx]))
+            price_content = data["Value"][label_idx]
         except:
-            label_text[2 * label_idx + 1].set("VALUE_MISSING")
+            price_content = "VALUE_MISSING"
+
+        label_text[2 * label_idx + 1].set(f"{price_content}")
 
         labels[2 * label_idx + 1].grid(row=row, column=2 * column + 1, sticky="w")
 
