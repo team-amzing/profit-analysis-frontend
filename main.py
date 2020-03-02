@@ -256,7 +256,8 @@ for column in range(num_columns):
         )
 
         try:
-            price_content = "{0:.2f}".format(data["Value"][label_idx]) 
+            price_value = data["Value"][label_idx]
+            price_content = f"{price_value:.2f}"
         except:
             price_content = "VALUE_MISSING"
 
