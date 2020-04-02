@@ -14,6 +14,8 @@ from data_analysis.price_prediction import model_arima
 from get_data.get_data import call_api
 
 
+# Tonicha - this is duplication of analysis that should be done on the server, the output should
+# be what is read in from the data files
 def sell_function(data_points, n_days):
     """ Predict 5 days using 2000 data points """
 
@@ -30,6 +32,8 @@ def sell_function(data_points, n_days):
     return profit_array
 
 
+# Tonicha - This is also now in backend so it can probably be removed, check if the function is called
+# further down, if so I can add todays price to the data package that is sent over from the backend
 def showCurrentPrice():
     """ Webscrapes and returns current market price for oil """
 
@@ -42,6 +46,17 @@ def showCurrentPrice():
 
     return price
 
+
+# Tonicha - You will want to read in the return of the function in get_data
+# Hattie's pseudo code start
+
+from get_data.read_files import get_data
+
+sell_today, predictions = get_data()
+
+# Hattie's pseudo code end
+
+# Tonicha - the work below looks like where the front end work starts
 
 def createLabel(root):
     """ Function to create tkinter label. """
@@ -112,6 +127,9 @@ data = pd.DataFrame(call_api(num_days_previous_to_show))
 data = data.append(prediction_df)
 data = data.reset_index(drop=True)
 
+# Tonicha - most of the code below duplicates work in the backend, because the new dataframe has dates included
+# Most can be removed
+
 # Add dates to dataframe predicted rows:
 # TODO Find a more elegant soloution for this mess - Michael
 last = None
@@ -167,6 +185,8 @@ for i, row in profit_df.iterrows():
     last = row["Date"]
 
 profit_df = profit_df[["Date", "Profit"]].groupby("Date").sum()
+
+# Tonicha - Looks like the front end starts here
 
 # UI Elements
 root = tk.Tk()
