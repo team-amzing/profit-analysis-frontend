@@ -10,54 +10,12 @@ import time
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from data_analysis.price_prediction import model_arima
-from get_data.get_data import call_api
-
-
-# Tonicha - this is duplication of analysis that should be done on the server, the output should
-# be what is read in from the data files
-def sell_function(data_points, n_days):
-    """ Predict 5 days using 2000 data points """
-
-    prediction_df = model_arima(data_points, n_days)
-
-    # Calculates the profit for each day predicted taking into account running
-    # costs and compares it with the highest profit so far.
-    profit_array = [None] * (n_days + 1)
-
-    for count in range(n_days):
-        price = prediction_df.iloc[count]["Prediction"]
-        profit_array[count + 1] = price
-
-    return profit_array
-
-
-# Tonicha - This is also now in backend so it can probably be removed, check if the function is called
-# further down, if so I can add todays price to the data package that is sent over from the backend
-def showCurrentPrice():
-    """ Webscrapes and returns current market price for oil """
-
-    page = requests.get(
-        "https://markets.businessinsider.com/commodities/oil-price?type=wti"
-    )
-    soup = BeautifulSoup(page.text, "html.parser")
-    currentPrices = soup.find(class_="push-data")
-    price = str(currentPrices.next)
-
-    return price
-
-
-# Tonicha - You will want to read in the return of the function in get_data
-# Hattie's pseudo code start
-
 from get_data.read_files import get_data
 
-sell_today, predictions = get_data()
+# Read in files
+predictions, sell_today = get_data()
 
-# Hattie's pseudo code end
-
-# Tonicha - the work below looks like where the front end work starts
-
+# Functions
 def createLabel(root):
     """ Function to create tkinter label. """
 
@@ -90,8 +48,6 @@ def diplayGraph(root, df, side, title, color):
 
     return figure, ax, line
 
-
-
 def tick():
     """ Tick function which runs each tkinter tick """
 
@@ -107,86 +63,14 @@ def tick():
     # could use >200 ms, but display gets jerky
     timeLabel.after(200, tick)
 
-
 # Variables:
-
-num_days_ahead_to_predict = 7
+num_days_ahead_to_predict = 5
 num_days_previous_to_show = 10
 num_days_to_train_on = 2000
 
 # Configure grid arangment:
 num_rows = 4
 num_columns = 4
-
-# Make prediction:
-prediction_df = model_arima(num_days_to_train_on, num_days_ahead_to_predict)
-prediction_df = prediction_df.rename(columns={"Prediction": "Value"})
-
-# Call real data from API:
-data = pd.DataFrame(call_api(num_days_previous_to_show))
-data = data.append(prediction_df)
-data = data.reset_index(drop=True)
-
-# Tonicha - most of the code below duplicates work in the backend, because the new dataframe has dates included
-# Most can be removed
-
-# Add dates to dataframe predicted rows:
-# TODO Find a more elegant soloution for this mess - Michael
-last = None
-recent_date_check = 1
-most_recent_date = None
-for i, row in data.iterrows():
-    if pd.isnull(row["Date"].to_numpy()):
-        data.loc[i, "Date"] = last + datetime.timedelta(days=1)
-        row["Date"] = last + datetime.timedelta(days=1)
-
-        if recent_date_check == 1:
-            most_recent_date = row["Date"]
-            recent_date_check = 0
-
-    if i != 0:
-        last = row["Date"]
-
-price_df = pd.DataFrame(data, columns=["Date", "Value"])
-price_df = price_df[["Date", "Value"]].groupby("Date").sum()
-
-# Make decision on whether to sell or not:
-decision = 1
-
-currentP = showCurrentPrice()
-sixDayPrediction = sell_function(num_days_to_train_on, num_days_ahead_to_predict)
-sixDayPrediction[0] = currentP
-TomorrowPred = sixDayPrediction[1]
-difference = 0
-decision = 0
-
-if TomorrowPred > float(sixDayPrediction[0]):
-    difference = TomorrowPred - float(sixDayPrediction[0])
-    decision = 0
-else:
-    difference = float(sixDayPrediction[0]) - TomorrowPred
-    decision = 1
-difference = str(round(difference, 2))
-
-# Calculate Profits:
-profits = [[]] * (num_days_ahead_to_predict + 1)
-dates = [[]] * (num_days_ahead_to_predict + 1)
-
-for day in range(num_days_ahead_to_predict + 1):
-    profits[day] = float(sixDayPrediction[day]) - float(currentP)
-
-profit_df = pd.DataFrame(profits, columns=["Profit"])
-profit_df["Date"] = dates
-
-last = most_recent_date - datetime.timedelta(days=2)
-for i, row in profit_df.iterrows():
-    profit_df.loc[i, "Date"] = last + datetime.timedelta(days=1)
-    row["Date"] = last + datetime.timedelta(days=1)
-    last = row["Date"]
-
-profit_df = profit_df[["Date", "Profit"]].groupby("Date").sum()
-
-# Tonicha - Looks like the front end starts here
 
 # UI Elements
 root = tk.Tk()
@@ -202,26 +86,28 @@ labelFrame = tk.Frame(root)
 labelFrame.pack(side=tk.BOTTOM, fill="both", expand=True)
 
 # Include Logo:
-photo = tk.PhotoImage(file="./frontend/Logo.png")
+photo = tk.PhotoImage(file="Logo.png")
 photo_label = tk.Label(dateFrame, image=photo, fg="white", bg="black").pack(
     side=tk.RIGHT
 )
 
 # Display descision:
-
-six_day_prediction_string = str(sixDayPrediction[0])
-tommorow_prediction_string = str(round(TomorrowPred, 2))
-
-if decision == 1:
+if sell_today == True:
     decision_string = "SELL"
 else:
     decision_string = "DON'T SELL"
 
+# Window setup
+todays_price = predictions["predicted_value"][0]
+tomorrows_price = predictions["predicted_value"][1]
+difference = str(tomorrows_price - todays_price)
+
+# Window
 main_window = tk.Label(
     root,
     text=f"""\n Recommendation: {decision_string}  \n
-    Todays Oil Price : {six_day_prediction_string} \n
-    Predicted price Tomorrow: {tommorow_prediction_string} \n
+    Todays Oil Price : {todays_price} \n
+    Predicted price Tomorrow: {tomorrows_price} \n
     Expected Gain Tomorrow: {difference} \n""",
     fg="white",
     bg="black",
@@ -231,14 +117,14 @@ main_window = tk.Label(
 ).pack()
 
 # Display Graphs:
+dates = [[]] * len(predictions.index)
+for index in range(len(predictions.index)):
+    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 
-dates = [[]] * len(profit_df.index)
-for index in range(len(profit_df.index)):
-    dates[index] = profit_df.index[index].strftime("%Y-%m-%d")
-
-price_figure, price_ax, price_line = diplayGraph(root, price_df, tk.LEFT, "Oil Price", "r")
-profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
-profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
+price_figure, price_ax, price_line = diplayGraph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
+### Profit needs sorting
+#profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
+#profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
 
 # Data Grid:
 current_date = datetime.datetime.now()
@@ -262,7 +148,7 @@ for column in range(num_columns):
         labels[2 * label_idx], label_text[2 * label_idx] = createLabel(labelFrame)
 
         try:
-            date_content = data["Date"][label_idx].strftime("%Y-%m-%d")
+            date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
         except:
             date_content = "No Data"
 
@@ -276,7 +162,7 @@ for column in range(num_columns):
         )
 
         try:
-            price_value = data["Value"][label_idx]
+            price_value = predictions["predicted_value"][label_idx]
             price_content = f"{price_value:.2f}"
         except:
             price_content = "VALUE_MISSING"
