@@ -31,7 +31,7 @@ pre-commit install
 
 Now pre-commit hooks should run on `git commit`.
 
-## Installation via requirments.txt:
+## Installation via requirements.txt:
 
 To install requirments using the requirments file run the following command:
 
