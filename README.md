@@ -1,7 +1,7 @@
 # Profit Analysis App
 This is a Python 3.7 application to analyse real time oil prices of West Texas Intermediate (WTI) oil in order to make predictions about the price of WTI oil the next day. It compares the profit made against outgoing costs for the current and subsequent day. It advises the user whether it would be more profitable to dock today or tomorrow.
 
-## Installation
+## Installation via Pipenv:
 Once you have cloned down this repository using `git clone` cd into the app directory eg.
 
 ```
@@ -30,3 +30,11 @@ pre-commit install
 ```
 
 Now pre-commit hooks should run on `git commit`.
+
+## Installation via requirments.txt:
+
+To install requirments using the requirments file run the following command:
+
+```
+pip install -r requirements.txt
+```
