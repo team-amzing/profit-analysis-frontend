@@ -15,8 +15,8 @@ from get_data.read_files import get_data
 # Read in files
 predictions, sell_today = get_data()
 
-# Functions
-def createLabel(root):
+
+def create_label(root):
     """ Function to create tkinter label. """
 
     var = tk.StringVar()
@@ -26,7 +26,8 @@ def createLabel(root):
 
     return label, var
 
-def diplayGraph(root, df, side, title, color):
+
+def display_graph(root, df, side, title, color):
     """ Displays a graph on a tkinter frame """
 
     figure = plt.Figure(figsize=(5, 4), dpi=100)
@@ -48,6 +49,7 @@ def diplayGraph(root, df, side, title, color):
 
     return figure, ax, line
 
+
 def tick():
     """ Tick function which runs each tkinter tick """
 
@@ -63,10 +65,6 @@ def tick():
     # could use >200 ms, but display gets jerky
     timeLabel.after(200, tick)
 
-# Variables:
-num_days_ahead_to_predict = 5
-num_days_previous_to_show = 10
-num_days_to_train_on = 2000
 
 # Configure grid arangment:
 num_rows = 4
@@ -121,7 +119,7 @@ dates = [[]] * len(predictions.index)
 for index in range(len(predictions.index)):
     dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 
-price_figure, price_ax, price_line = diplayGraph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
+price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
 ### Profit needs sorting
 #profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
 #profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
@@ -145,7 +143,7 @@ for column in range(num_columns):
     for row in range(num_rows):
 
         # Set date columns:
-        labels[2 * label_idx], label_text[2 * label_idx] = createLabel(labelFrame)
+        labels[2 * label_idx], label_text[2 * label_idx] = create_label(labelFrame)
 
         try:
             date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
@@ -157,7 +155,7 @@ for column in range(num_columns):
         labels[2 * label_idx].grid(row=row, column=2 * column, sticky="e")
 
         # Set price columns
-        labels[2 * label_idx + 1], label_text[2 * label_idx + 1] = createLabel(
+        labels[2 * label_idx + 1], label_text[2 * label_idx + 1] = create_label(
             labelFrame
         )
 
