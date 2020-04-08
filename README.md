@@ -5,19 +5,25 @@ This is a Python 3.7 application to analyse real time oil prices of West Texas I
 Clone this repository using the following command.
 
 ```
-cd profit-analysis-app
+cd profit-analysis-frontend
 ```
 
 Once you have cloned down this repository using `git clone` cd into the app directory eg.
 
 ```
-cd profit-analysis-app
+cd profit-analysis-frontend
 ```
 
-The dependancies can be installed through one of two methods, pipenv or the requirments.txt file, detailed instructions can be found below. It is recomended that you use pipenv but if pipenv is not functioning use the requirments.txt file.
+The dependencies can be installed through one of two methods, pipenv or the requirements.txt file, detailed instructions can be found below. It is recommended that you use pipenv but if pipenv is not functioning use the requirements.txt file.
 
 ## Installation via Pipenv:
-The project uses pipenv to manage project and development packages. To install these requirements run
+The project uses pipenv to manage project and development packages. Pipenv can be installed using pip:
+
+```bash
+pip install pipenv
+```
+
+To install requirements run:
 
 ```
 pipenv install --dev
@@ -49,17 +55,41 @@ pip install -r requirements.txt
 ```
 
 ## Running the application
-
-For this demo only, you would need to change branches please, this can be down with the following:
-
-```
-git checkout scrape-html-site
-```
-
 Once the dependacies have been downloaded, and you are in the correct branch, the application can be run using the following command.
 
 ```
 python3 main.py
 ```
+
+
+# Please Follow these instructions to install and run the software for the demo
+
+## Get the code
+To make sure you have the latest changes, please `cd` into the app directory `profit-analysis-frontend` and from the master branch run:
+
+```bash
+git pull
+```
+
+Then to checkout the branch with the working demo, run:
+
+```bash
+git checkout scrape-html-site
+```
+
+## Install requirements
+To install the dependencies either locally or within a virtual environment run:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Launch the software
+To launch the software in a UI please run the following, ensuring you are in the app directory `profit-analysis-frontend`:
+
+```bash
+python main.py
+```
+
 
 
