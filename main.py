@@ -121,8 +121,8 @@ main_window = tk.Label(
 dates = [[]] * len(predictions.index)
 #for index in range(len(predictions.index)):
     #dates[index] = predictions.index[index].strftime("%Y-%m-%d")
-dates = predictions.index
-print(dates)
+dates = predictions.index.values
+print(dates,'dates')
 price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
 ### Profit needs sorting
 #profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
@@ -150,7 +150,8 @@ for column in range(num_columns):
         labels[2 * label_idx], label_text[2 * label_idx] = create_label(labelFrame)
 
         try:
-            date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
+            #date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
+            date_content = dates
         except:
             date_content = "No Data"
 

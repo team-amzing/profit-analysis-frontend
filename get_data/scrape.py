@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uReq
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 url_with_data = "http://35.204.193.240/"
 
@@ -43,7 +44,9 @@ def scrape_data_from_url(url):
             pass  # First row is the headers
         else:
             row = raw_row.find_all("td")
-            dates.append( str( row[0] ).strip("</td>"))
+            date = str( row[0] ).strip("</td>")
+            date = datetime.strptime(date[:10], '%Y-%m-%d')
+            dates.append(date)
             pred_vals.append( float( str( row[1] ).strip("</td>")))
             errors.append( float( str( row[2] ).strip("</td>")))
 
