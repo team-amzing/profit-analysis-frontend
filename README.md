@@ -88,7 +88,7 @@ pip install -r requirements.txt
 To launch the software in a UI please run the following, ensuring you are in the app directory `profit-analysis-frontend`:
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 
