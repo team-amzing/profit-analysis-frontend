@@ -15,11 +15,7 @@ pre-commit = "==1.18.3"
 numpy = "==1.17.4"
 matplotlib = "==3.1.2"
 quandl = "==3.4.8"
-statsmodels = "==0.10.1"
 bs4 = "==0.0.1"
-requests = "==2.23.0"
-scikit-learn = "==0.22.2"
-sklearn = "==0.0"
 
 [requires]
 python_version = "3.7"
