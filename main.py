@@ -7,9 +7,6 @@ import requests
 import tkinter as tk
 import time
 
-# Tom added
-from datetime import datetime as dt
-
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -18,6 +15,7 @@ from get_data.scrape import scrape_data_from_url
 # Read in files
 SERVER_URL = "http://35.204.193.240/"
 predictions, sell_today = scrape_data_from_url( SERVER_URL )
+
 
 def create_label(root):
     """ Function to create tkinter label. """
@@ -70,8 +68,8 @@ def tick():
 
 
 # Configure grid arangment:
-num_rows = 4
-num_columns = 4
+num_rows = 3
+num_columns = 3
 
 # UI Elements
 root = tk.Tk()
@@ -119,10 +117,9 @@ main_window = tk.Label(
 
 # Display Graphs:
 dates = [[]] * len(predictions.index)
-#for index in range(len(predictions.index)):
-    #dates[index] = predictions.index[index].strftime("%Y-%m-%d")
-dates = predictions.index.values
-print(dates,'dates')
+for index in range(len(predictions.index)):
+    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
+
 price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
 ### Profit needs sorting
 #profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
@@ -150,8 +147,7 @@ for column in range(num_columns):
         labels[2 * label_idx], label_text[2 * label_idx] = create_label(labelFrame)
 
         try:
-            #date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
-            date_content = dates
+            date_content = predictions.index[label_idx].strftime("%Y-%m-%d")
         except:
             date_content = "No Data"
 
