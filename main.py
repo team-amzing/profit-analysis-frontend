@@ -7,14 +7,17 @@ import requests
 import tkinter as tk
 import time
 
+# Tom added
+from datetime import datetime as dt
+
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from get_data.read_files import get_data
+from get_data.scrape import scrape_data_from_url
 
 # Read in files
-predictions, sell_today = get_data()
-
+SERVER_URL = "http://35.204.193.240/"
+predictions, sell_today = scrape_data_from_url( SERVER_URL )
 
 def create_label(root):
     """ Function to create tkinter label. """
@@ -116,8 +119,9 @@ main_window = tk.Label(
 
 # Display Graphs:
 dates = [[]] * len(predictions.index)
-for index in range(len(predictions.index)):
-    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
+#for index in range(len(predictions.index)):
+    #dates[index] = predictions.index[index].strftime("%Y-%m-%d")
+dates = predictions.index
 
 price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
 ### Profit needs sorting
