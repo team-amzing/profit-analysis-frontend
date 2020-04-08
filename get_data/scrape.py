@@ -35,9 +35,10 @@ def scrape_data_from_url(url):
     for raw_row in rows:
         if i == 0:
             head = raw_row.find_all("th")
-            header1 = str(head[0]).strip("</th>")
-            header2 = str(head[1]).strip("</th>")
-            header3 = str(head[2]).strip("</th>")
+            header0 = str(head[0]).strip("</th>")
+            header1 = str(head[1]).strip("</th>")
+            header2 = str(head[2]).strip("</th>")
+            header3 = str(head[3]).strip("</th>")
             i = 1
             pass  # First row is the headers
         else:

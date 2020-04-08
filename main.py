@@ -122,7 +122,7 @@ dates = [[]] * len(predictions.index)
 #for index in range(len(predictions.index)):
     #dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 dates = predictions.index
-
+print(dates)
 price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
 ### Profit needs sorting
 #profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
