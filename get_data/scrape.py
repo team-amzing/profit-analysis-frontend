@@ -15,7 +15,8 @@ url_with_data = "http://35.204.193.240/"
 
 def scrape_data_from_url(url):
     """
-    A function to scrape data from a given url, and return the data as numpy arrays
+    A function to scrape data from a given url, and return the data as na pandas DataFrame.
+    The numbers are stored as floats, and the dates are stored as datetime objects.
     """
     # Declare arrays where the data will be stored
     dates = []
@@ -66,7 +67,7 @@ def scrape_data_from_url(url):
     elif true_or_false == " True":
         sell = 1
     else:
-        printf("Can't find if you want to sell or not")
+        print("Can't find if you want to sell or not")
 
     return df, sell
 
