@@ -23,7 +23,7 @@ The project uses pipenv to manage project and development packages. Pipenv can b
 pip install pipenv
 ```
 
-To install requirements run:
+To install dependencies in a virtual environment run
 
 ```
 pipenv install --dev
@@ -48,7 +48,8 @@ Now pre-commit hooks should run on `git commit`.
 
 ## Installation via requirements.txt:
 
-If the installation via pipenv is not possible, install requirments using the requirements file by running the following command.
+If the installation via pipenv is not possible, install requirements using the requirements file by running the following command.
+
 
 ```
 pip install -r requirements.txt
@@ -77,7 +78,7 @@ To make sure you have the latest changes, please `cd` into the app directory `pr
 git pull
 ```
 
-Then to checkout the branch with the working demo, run:
+Then checkout the branch with the latest changes for the working demo
 
 ```bash
 git checkout scrape-html-site
@@ -96,6 +97,3 @@ To launch the software in a UI please run the following, ensuring you are in the
 ```bash
 python3 main.py
 ```
-
-
-
