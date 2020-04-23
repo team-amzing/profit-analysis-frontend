@@ -53,6 +53,6 @@ pip install -r requirements.txt
 Once the dependacies have been downloaded the application can be run using the following command.
 
 ```
-python3 main.py
+python main.py
 ```
 
