@@ -76,9 +76,6 @@ root = tk.Tk()
 
 dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
-timeFrame = tk.Frame(root)
-timeFrame.pack(fill=tk.X)
-time1 = ""
 
 # Frame to hold quantative price information:
 labelFrame = tk.Frame(root)
@@ -103,7 +100,7 @@ difference = str(tomorrows_price - todays_price)
 
 # Window
 main_window = tk.Label(
-    root,
+    dateFrame,
     text=f"""\n Recommendation: {decision_string}  \n
     Todays Oil Price : {todays_price} \n
     Predicted price Tomorrow: {tomorrows_price} \n
@@ -111,9 +108,8 @@ main_window = tk.Label(
     fg="white",
     bg="black",
     relief="raised",
-    borderwidth=5,
-    font=("Times 32", 16),
-).pack()
+    borderwidth=0,
+).pack(fill=tk.X)
 
 # Display Graphs:
 dates = [[]] * len(predictions.index)
@@ -127,12 +123,6 @@ price_figure, price_ax, price_line = display_graph(root, predictions["predicted_
 
 # Data Grid:
 current_date = datetime.datetime.now()
-
-dateLabel = tk.Label(dateFrame, text=current_date.strftime("%x"), fg="white")
-timeLabel = tk.Label(dateFrame, text=current_date.strftime("%X"), fg="white")
-
-dateLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
-timeLabel.pack(side=tk.LEFT, anchor=tk.N, padx=5, pady=5)
 
 total_num_labels = num_rows * (num_columns * 2)
 
@@ -179,8 +169,8 @@ for column in range(num_columns):
 root.configure(background="black")
 labelFrame.configure(background="black")
 dateFrame.configure(background="black")
-timeFrame.configure(background="black")
-dateLabel.configure(background="black")
-timeLabel.configure(background="black")
-tick()
+#timeFrame.configure(background="black")
+#dateLabel.configure(background="black")
+#timeLabel.configure(background="black")
+#tick()
 root.mainloop()
