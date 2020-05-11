@@ -72,6 +72,7 @@ First clone the repository, to do this run the following:
 git clone git@github.com:team-amzing/profit-analysis-frontend.git
 ```
 
+
 To make sure you have the latest changes, please `cd` into the app directory `profit-analysis-frontend` and from the master branch run:
 
 ```bash
