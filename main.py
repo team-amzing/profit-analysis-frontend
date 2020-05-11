@@ -10,10 +10,11 @@ import time
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from get_data.read_files import get_data
+from get_data.scrape import scrape_data_from_url
 
 # Read in files
-predictions, sell_today = get_data()
+SERVER_URL = "http://35.204.193.240/"
+predictions, sell_today = scrape_data_from_url( SERVER_URL )
 
 
 def create_label(root):
@@ -67,8 +68,8 @@ def tick():
 
 
 # Configure grid arangment:
-num_rows = 4
-num_columns = 4
+num_rows = 3
+num_columns = 3
 
 # UI Elements
 root = tk.Tk()
