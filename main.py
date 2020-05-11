@@ -73,7 +73,7 @@ num_columns = 3
 
 # UI Elements
 root = tk.Tk()
-
+root.geometry("580x580")
 dateFrame = tk.Frame(root)
 dateFrame.pack(fill=tk.X)
 
