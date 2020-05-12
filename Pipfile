@@ -16,6 +16,8 @@ numpy = "==1.17.4"
 matplotlib = "==3.1.2"
 quandl = "==3.4.8"
 bs4 = "==0.0.1"
+Pillow = "==6.2.1"
+CairoSVG = "==2.4.2"
 
 [requires]
 python_version = "3"

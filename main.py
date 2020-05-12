@@ -6,16 +6,17 @@ import pandas as pd
 import requests
 import tkinter as tk
 import time
-
+from PIL import Image, ImageTk
+import cairosvg
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+from get_data.scrape import scrape_image_from_url
 from get_data.scrape import scrape_data_from_url
 
 # Read in files
 SERVER_URL = "http://35.204.193.240/"
 predictions, sell_today = scrape_data_from_url( SERVER_URL )
-
+scrape_image_from_url( SERVER_URL )
 
 def create_label(root):
     """ Function to create tkinter label. """
@@ -66,7 +67,6 @@ def tick():
     # could use >200 ms, but display gets jerky
     timeLabel.after(200, tick)
 
-
 # Configure grid arangment:
 num_rows = 3
 num_columns = 3
@@ -112,14 +112,15 @@ main_window = tk.Label(
 ).pack(fill=tk.X)
 
 # Display Graphs:
-dates = [[]] * len(predictions.index)
-for index in range(len(predictions.index)):
-    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
+###
+#dates = [[]] * len(predictions.index)
+#for index in range(len(predictions.index)):
+#    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 
-price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
-### Profit needs sorting
-#profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
-#profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
+#PLACE THE SVG HERE
+cairosvg.svg2png(url='projection.svg', write_to='projection.png')
+graph_image = ImageTk.PhotoImage(Image.open("projection.png"))
+image_label = tk.Label(root, image=graph_image).pack()
 
 # Data Grid:
 current_date = datetime.datetime.now()
