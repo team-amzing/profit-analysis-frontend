@@ -3,8 +3,6 @@ A script to scrape the server for the results of our backend, and output these r
 in a way that they can be simply read by the frontend GUI
 """
 import urllib.request
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uReq
 import numpy as np
@@ -78,7 +76,3 @@ def scrape_image_from_url(url):
     full_url = url + "projection.svg"
     urllib.request.urlretrieve(full_url, saved_path)
 
-#scrape_image_from_url(url_with_data)
-
-#df, sell = scrape_data_from_url(url_with_data)
-#print(df)

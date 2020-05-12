@@ -17,9 +17,6 @@ from get_data.scrape import scrape_data_from_url
 SERVER_URL = "http://35.204.193.240/"
 predictions, sell_today = scrape_data_from_url( SERVER_URL )
 scrape_image_from_url( SERVER_URL )
-#image = Image.open('projection.svg')
-#image = plt.imread('projection.svg')
-
 
 def create_label(root):
     """ Function to create tkinter label. """
@@ -124,13 +121,6 @@ main_window = tk.Label(
 cairosvg.svg2png(url='projection.svg', write_to='projection.png')
 graph_image = ImageTk.PhotoImage(Image.open("projection.png"))
 image_label = tk.Label(root, image=graph_image).pack()
-
-
-#price_figure, price_ax, price_line = display_graph(root, predictions["predicted_value"], tk.LEFT, "Oil Price", "r")
-###
-### Profit needs sorting
-#profit_figure, profit_ax, profit_line = diplayGraph(root, profit_df, tk.RIGHT, "Predicted Profit", "g")
-#profit_ax.set_xticklabels(dates, rotation=35, fontsize=10)
 
 # Data Grid:
 current_date = datetime.datetime.now()
