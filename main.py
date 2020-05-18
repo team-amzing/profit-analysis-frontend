@@ -102,9 +102,9 @@ difference = str(tomorrows_price - todays_price)
 main_window = tk.Label(
     dateFrame,
     text=f"""\n Recommendation: {decision_string}  \n
-    Todays Oil Price : {todays_price} \n
-    Predicted price Tomorrow: {tomorrows_price} \n
-    Expected Gain Tomorrow: {difference} \n""",
+    Todays Oil Price : {todays_price:.2f} \n
+    Predicted price Tomorrow: {tomorrows_price:.2f} \n
+    Expected Gain Tomorrow: {difference:.2f} \n""",
     fg="white",
     bg="black",
     relief="raised",
