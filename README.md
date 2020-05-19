@@ -1,5 +1,5 @@
 # Profit Analysis App
-This is a Python 3.7 application to analyse real time oil prices of West Texas Intermediate (WTI) oil in order to make predictions about the price of WTI oil the next day. It compares the profit made against outgoing costs for the current and subsequent day. It advises the user whether it would be more profitable to dock today or tomorrow.
+This is a Python 3.7 application to analyse real time oil prices (USD) of West Texas Intermediate (WTI) oil in order to make predictions about the price of WTI oil the next day. It compares the profit made against outgoing costs for the current and subsequent day. It advises the user whether it would be more profitable to dock today or tomorrow.
 
 ## Get the code
 First clone the repository, to do this run:
@@ -13,11 +13,6 @@ Once you have cloned down this repository using cd into the app directory eg.
 ```
 cd profit-analysis-frontend
 ```
-## Prerequisite (Downloading CairoSVG)
-Follow the instructions posted on Cairo's webpage to install CairoSVG on your OS.
-https://cairographics.org/download/
-
-The dependencies can be installed through one of two methods, pipenv or the requirements.txt file, detailed instructions can be found below. It is recommended that you use pipenv but if pipenv is not functioning use the requirements.txt file.
 
 ## Installation via Pipenv:
 The project uses pipenv to manage project and development packages. Pipenv can be installed using pip:
@@ -86,7 +81,7 @@ git pull
 To install the dependencies either locally or within a virtual environment run:
 
 ```bash
-pip install -r requirements.txt
+pipenv install
 ```
 
 ## Launch the software
