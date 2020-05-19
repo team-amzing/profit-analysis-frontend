@@ -84,6 +84,12 @@ To install the dependencies either locally or within a virtual environment run:
 pipenv install
 ```
 
+To initialise the virtual environment run:
+
+```
+pipenv shell
+```
+
 ## Launch the software
 To launch the software in a UI please run the following, ensuring you are in the app directory `profit-analysis-frontend`:
 
