@@ -69,7 +69,7 @@ python main.py
 # Please Follow these instructions to install and run the software for the demo
 
 ## Get the latest code
-First clone the repository, to do this run the following:
+If you have not done so already, clone the repository by running the following:
 
 ```bash
 git clone git@github.com:team-amzing/profit-analysis-frontend.git
@@ -80,12 +80,6 @@ To make sure you have the latest changes, please `cd` into the app directory `pr
 
 ```bash
 git pull
-```
-
-Then checkout the branch with the latest changes for the working demo
-
-```bash
-git checkout scrape-html-site
 ```
 
 ## Install requirements
