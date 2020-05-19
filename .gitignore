@@ -106,3 +106,6 @@ venv.bak/
 # idea
 /.idea/
 .idea/workspace.xml
+
+# Images downloaded from server
+/projection.png
