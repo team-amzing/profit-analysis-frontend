@@ -7,7 +7,6 @@ import requests
 import tkinter as tk
 import time
 from PIL import Image, ImageTk
-import cairosvg
 from bs4 import BeautifulSoup
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from get_data.scrape import scrape_image_from_url
@@ -96,7 +95,7 @@ else:
 # Window setup
 todays_price = predictions["predicted_value"][0]
 tomorrows_price = predictions["predicted_value"][1]
-difference = str(tomorrows_price - todays_price)
+difference = tomorrows_price - todays_price
 
 # Window
 main_window = tk.Label(
@@ -117,8 +116,7 @@ main_window = tk.Label(
 #for index in range(len(predictions.index)):
 #    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 
-#PLACE THE SVG HERE
-cairosvg.svg2png(url='projection.svg', write_to='projection.png')
+#PLACE THE PNG HERE
 graph_image = ImageTk.PhotoImage(Image.open("projection.png"))
 image_label = tk.Label(root, image=graph_image).pack()
 
@@ -170,8 +168,4 @@ for column in range(num_columns):
 root.configure(background="black")
 labelFrame.configure(background="black")
 dateFrame.configure(background="black")
-#timeFrame.configure(background="black")
-#dateLabel.configure(background="black")
-#timeLabel.configure(background="black")
-#tick()
 root.mainloop()
