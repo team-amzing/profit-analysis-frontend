@@ -37,14 +37,6 @@
             ],
             "version": "==1.1.0"
         },
-        "cairosvg": {
-            "hashes": [
-                "sha256:4e668f96653326780036ebb0a9ff2bb59a8443d7bcfc51a14aab77b57a8e67ad",
-                "sha256:9cb1df7e9bc60f75fb87f67940a8fb805aad544337a67a40b67c05cfe33711a2"
-            ],
-            "index": "pypi",
-            "version": "==2.4.2"
-        },
         "certifi": {
             "hashes": [
                 "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304",
