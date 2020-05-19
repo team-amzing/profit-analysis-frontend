@@ -118,7 +118,7 @@ main_window = tk.Label(
 #    dates[index] = predictions.index[index].strftime("%Y-%m-%d")
 
 #PLACE THE SVG HERE
-cairosvg.svg2png(url='projection.svg', write_to='projection.png')
+#cairosvg.svg2png(url='projection.svg', write_to='projection.png')
 graph_image = ImageTk.PhotoImage(Image.open("projection.png"))
 image_label = tk.Label(root, image=graph_image).pack()
 

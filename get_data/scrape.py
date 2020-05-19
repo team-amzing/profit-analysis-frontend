@@ -72,7 +72,7 @@ def scrape_data_from_url(url):
 
 
 def scrape_image_from_url(url):
-    saved_path = 'projection.svg'
-    full_url = url + "projection.svg"
+    saved_path = 'projection.png'
+    full_url = url + "projection.png"
     urllib.request.urlretrieve(full_url, saved_path)
 
