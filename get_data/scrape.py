@@ -29,6 +29,7 @@ def scrape_data_from_url(url):
 
     # Parse this html
     page_soup = soup(page_html, "html.parser")  # Second arg is a bs4 keyword
+    
     table = page_soup.find("table")
     rows = table.find_all("tr")
     i = 0  # Will let use save headers seperately
@@ -60,6 +61,10 @@ def scrape_data_from_url(url):
     should_sell_string = str(page_soup.find_all("h2")[1]).strip(
         "</h2>"
     )  # This just isolates the line that says 'Should sell today? True' (or False)
+    todays_value = str(page_soup.find_all("h2")[0]).strip(
+        "</h2>"
+    )
+    todays_value = todays_value[-5:]
     true_or_false = should_sell_string[-5:]  # Find if it says true or false
     if true_or_false == "False":
         sell = 0
@@ -68,7 +73,7 @@ def scrape_data_from_url(url):
     else:
         print("Can't find if you want to sell or not")
 
-    return df, sell
+    return df, sell, todays_value
 
 
 def scrape_image_from_url(url):

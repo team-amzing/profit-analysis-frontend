@@ -14,7 +14,7 @@ from get_data.scrape import scrape_data_from_url
 
 # Read in files
 SERVER_URL = "http://127.0.0.1/"
-predictions, sell_today = scrape_data_from_url( SERVER_URL )
+predictions, sell_today, todays_val = scrape_data_from_url( SERVER_URL )
 scrape_image_from_url(SERVER_URL)
 
 def create_label(root):
@@ -93,8 +93,8 @@ else:
     decision_string = "DON'T SELL"
 
 # Window setup
-todays_price = predictions["predicted_value"][0]
-tomorrows_price = predictions["predicted_value"][1]
+todays_price = float(todays_val)
+tomorrows_price = predictions["predicted_value"][0]
 difference = tomorrows_price - todays_price
 
 # Window
@@ -103,7 +103,7 @@ main_window = tk.Label(
     text=f"""\n Recommendation: {decision_string}  \n
     Todays Oil Price : {todays_price:.2f} \n
     Next Days Price: {tomorrows_price:.2f} \n
-    Expected Wait Gain: {difference:.2f} \n""",
+    Expected Gain: {difference:.2f} \n""",
     fg="white",
     bg="black",
     relief="raised",
