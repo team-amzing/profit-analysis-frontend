@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 
-url_with_data = "http://35.204.193.240/"
+url_with_data = "http://127.0.0.1"
 
 
 def scrape_data_from_url(url):
@@ -73,5 +73,6 @@ def scrape_data_from_url(url):
 
 def scrape_image_from_url(url):
     saved_path = 'projection.png'
-    full_url = url + "projection.png"
+    full_url = url + 'projection.png'
+    print (full_url)
     urllib.request.urlretrieve(full_url, saved_path)

@@ -13,9 +13,9 @@ from get_data.scrape import scrape_image_from_url
 from get_data.scrape import scrape_data_from_url
 
 # Read in files
-SERVER_URL = "http://35.204.193.240/"
+SERVER_URL = "http://127.0.0.1/"
 predictions, sell_today = scrape_data_from_url( SERVER_URL )
-scrape_image_from_url( SERVER_URL )
+scrape_image_from_url(SERVER_URL)
 
 def create_label(root):
     """ Function to create tkinter label. """
@@ -102,8 +102,8 @@ main_window = tk.Label(
     dateFrame,
     text=f"""\n Recommendation: {decision_string}  \n
     Todays Oil Price : {todays_price:.2f} \n
-    Predicted price Tomorrow: {tomorrows_price:.2f} \n
-    Expected Gain Tomorrow: {difference:.2f} \n""",
+    Next Days Price: {tomorrows_price:.2f} \n
+    Expected Wait Gain: {difference:.2f} \n""",
     fg="white",
     bg="black",
     relief="raised",
